@@ -360,9 +360,6 @@ function AboutVersionSection() {
                 <SelectItem hideIndicator value="latest">
                   Latest
                 </SelectItem>
-                <SelectItem hideIndicator value="nightly">
-                  Nightly
-                </SelectItem>
               </SelectPopup>
             </Select>
           }

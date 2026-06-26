@@ -47,7 +47,7 @@ describe("branding", () => {
     expect(branding.HOSTED_APP_CHANNEL).toBe("nightly");
     expect(branding.HOSTED_APP_CHANNEL_LABEL).toBe("Nightly");
     expect(branding.APP_STAGE_LABEL).toBe("Nightly");
-    expect(branding.APP_DISPLAY_NAME).toBe("T3 Code (Nightly)");
+    expect(branding.APP_DISPLAY_NAME).toBe("RCode");
   });
 
   it("ignores unknown hosted app channels", async () => {
@@ -61,45 +61,34 @@ describe("branding", () => {
 });
 
 describe("branding logic", () => {
-  it("returns Nightly for nightly primary server versions", () => {
+  it("returns the fallback stage label (no server version based override)", () => {
     expect(
       resolveServerBackedAppStageLabel({
         primaryServerVersion: "0.0.28-nightly.20260616.12",
         fallbackStageLabel: "Alpha",
       }),
-    ).toBe("Nightly");
+    ).toBe("Alpha");
   });
 
-  it("updates the display name for nightly primary server versions", () => {
+  it("returns the fallback display name (no server version based override)", () => {
     expect(
       resolveServerBackedAppDisplayName({
-        baseName: "T3 Code",
-        fallbackDisplayName: "T3 Code (Alpha)",
-        fallbackStageLabel: "Alpha",
+        baseName: "RCode",
+        fallbackDisplayName: "RCode",
+        fallbackStageLabel: "",
         primaryServerVersion: "0.0.28-nightly.20260616.12",
       }),
-    ).toBe("T3 Code (Nightly)");
+    ).toBe("RCode");
   });
 
-  it("keeps the fallback display name for stable primary server versions", () => {
+  it("returns fallback for stable server versions", () => {
     expect(
       resolveServerBackedAppDisplayName({
-        baseName: "T3 Code",
-        fallbackDisplayName: "T3 Code (Alpha)",
-        fallbackStageLabel: "Alpha",
+        baseName: "RCode",
+        fallbackDisplayName: "RCode",
+        fallbackStageLabel: "",
         primaryServerVersion: "0.0.27",
       }),
-    ).toBe("T3 Code (Alpha)");
-  });
-
-  it("keeps the fallback display name for malformed nightly primary server versions", () => {
-    expect(
-      resolveServerBackedAppDisplayName({
-        baseName: "T3 Code",
-        fallbackDisplayName: "T3 Code (Alpha)",
-        fallbackStageLabel: "Alpha",
-        primaryServerVersion: "0.0.28-nightly.20260616",
-      }),
-    ).toBe("T3 Code (Alpha)");
+    ).toBe("RCode");
   });
 });

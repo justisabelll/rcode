@@ -73,7 +73,6 @@ import {
   type SidebarThreadSortOrder,
 } from "@t3tools/contracts/settings";
 import { isElectron } from "../env";
-import { APP_STAGE_LABEL } from "../branding";
 import { useOpenPrLink } from "../lib/openPullRequestLink";
 import { isTerminalFocused } from "../lib/terminalFocus";
 import { isMacPlatform } from "../lib/utils";
@@ -191,7 +190,6 @@ import {
   resolveProjectStatusIndicator,
   resolveSidebarNewThreadSeedContext,
   resolveSidebarNewThreadEnvMode,
-  resolveSidebarStageBadgeLabel,
   resolveThreadRowClassName,
   resolveThreadStatusPill,
   orderItemsByPreferredIds,
@@ -2668,8 +2666,6 @@ const SidebarChromeHeader = memo(function SidebarChromeHeader({
 });
 
 function SidebarBrand() {
-  const stageLabel = useSidebarStageLabel();
-
   return (
     <Link
       aria-label="Go to threads"
@@ -2678,9 +2674,6 @@ function SidebarBrand() {
     >
       <span className="truncate text-sm font-semibold tracking-tight text-foreground">
         R<span className="font-medium text-muted-foreground">Code</span>
-      </span>
-      <span className="sidebar-brand-stage h-4 shrink-0 items-center whitespace-nowrap rounded-full border border-border/60 bg-muted/45 px-1.5 text-[8px] font-semibold leading-none uppercase tracking-[0.16em] text-muted-foreground/70">
-        {stageLabel}
       </span>
     </Link>
   );
@@ -2715,16 +2708,6 @@ function SidebarThemeToggle() {
       <TooltipPopup side="bottom">{label}</TooltipPopup>
     </Tooltip>
   );
-}
-
-function useSidebarStageLabel() {
-  const primaryServerVersion =
-    useAtomValue(primaryServerConfigAtom)?.environment.serverVersion ?? null;
-
-  return resolveSidebarStageBadgeLabel({
-    primaryServerVersion,
-    fallbackStageLabel: APP_STAGE_LABEL,
-  });
 }
 
 const SidebarChromeFooter = memo(function SidebarChromeFooter() {

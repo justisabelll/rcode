@@ -8,7 +8,7 @@ import {
   Maximize2Icon,
   Minimize2Icon,
   WrapTextIcon,
-} from "lucide-react";
+} from "~/lib/icons";
 import type { ScopedThreadRef, ServerProviderSkill } from "@t3tools/contracts";
 import {
   isAtomCommandInterrupted,

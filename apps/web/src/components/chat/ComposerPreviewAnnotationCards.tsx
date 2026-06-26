@@ -1,5 +1,5 @@
 import type { PreviewAnnotationPayload } from "@t3tools/contracts";
-import { Frame, MousePointerClick, Paintbrush, PenLine, X } from "lucide-react";
+import { Frame, MousePointerClick, Paintbrush, PenLine, X } from "~/lib/icons";
 import type { ReactNode } from "react";
 
 import type { ComposerImageAttachment } from "~/composerDraftStore";
@@ -63,7 +63,7 @@ export function ComposerPreviewAnnotationCards({
                 />
               </button>
             ) : (
-              <span className="grid size-10 shrink-0 place-items-center border-r border-border/70 text-blue-500">
+              <span className="grid size-10 shrink-0 place-items-center border-r border-border/70 text-info-foreground">
                 <MousePointerClick className="size-3.5" />
               </span>
             )}

@@ -1,5 +1,5 @@
 import type { EnvironmentId } from "@t3tools/contracts";
-import { CloudIcon, MonitorIcon } from "lucide-react";
+import { CloudIcon, MonitorIcon } from "~/lib/icons";
 import { memo, useMemo } from "react";
 
 import type { EnvironmentOption } from "./BranchToolbar.logic";

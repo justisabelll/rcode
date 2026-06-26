@@ -6,7 +6,7 @@ import {
   RefreshCwIcon,
   TerminalIcon,
   TriangleAlertIcon,
-} from "lucide-react";
+} from "~/lib/icons";
 import { useAuth } from "@clerk/react";
 import { type ReactNode, memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
@@ -795,7 +795,7 @@ const PairingLinkListRow = memo(function PairingLinkListRow({
           <div className="flex min-h-5 items-center gap-1.5">
             <ConnectionStatusDot
               tooltipText={`Link created at ${formatAccessTimestamp(pairingLink.createdAt)}`}
-              dotClassName="bg-amber-400"
+              dotClassName="bg-warning"
             />
             <h3 className="text-sm font-medium text-foreground">{primaryLabel}</h3>
             <Popover>

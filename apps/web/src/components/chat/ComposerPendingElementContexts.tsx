@@ -1,4 +1,4 @@
-import { MousePointerClick, X } from "lucide-react";
+import { MousePointerClick, X } from "~/lib/icons";
 
 import {
   COMPOSER_INLINE_CHIP_CLASS_NAME,

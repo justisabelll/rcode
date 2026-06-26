@@ -5,7 +5,7 @@ import {
   ExternalLink,
   MousePointerClick,
   RotateCw,
-} from "lucide-react";
+} from "~/lib/icons";
 import {
   type FormEvent,
   type KeyboardEvent,

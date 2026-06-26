@@ -1,4 +1,4 @@
-import { Undo2Icon } from "lucide-react";
+import { Undo2Icon } from "~/lib/icons";
 import { type ComponentPropsWithoutRef, type ReactNode, useEffect, useState } from "react";
 
 import { cn } from "../../lib/utils";
@@ -31,7 +31,7 @@ export function SettingsSection({
   return (
     <section {...sectionProps} className={cn("space-y-2.5", className)}>
       <div className="flex items-center justify-between px-1">
-        <h2 className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-foreground/50">
+        <h2 className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
           <span className="inline-block h-px w-3 bg-border" aria-hidden />
           {icon}
           {title}

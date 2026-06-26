@@ -1,4 +1,4 @@
-import { DownloadIcon, RotateCwIcon, TriangleAlertIcon, XIcon } from "lucide-react";
+import { DownloadIcon, RotateCwIcon, TriangleAlertIcon, XIcon } from "~/lib/icons";
 import { useCallback, useState } from "react";
 import { isElectron } from "../../env";
 import { useDesktopUpdateState } from "../../state/desktopUpdate";

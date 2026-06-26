@@ -58,7 +58,7 @@ import {
   WrenchIcon,
   XIcon,
   ZapIcon,
-} from "lucide-react";
+} from "~/lib/icons";
 import { Button } from "../ui/button";
 import { buildExpandedImagePreview, ExpandedImagePreview } from "./ExpandedImagePreview";
 import { ProposedPlanCard } from "./ProposedPlanCard";

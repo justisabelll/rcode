@@ -9,7 +9,7 @@ import {
   PlusIcon,
   StarIcon,
   XIcon,
-} from "lucide-react";
+} from "~/lib/icons";
 import { useMemo, useRef, useState } from "react";
 import {
   ProviderDriverKind,
@@ -286,7 +286,7 @@ export function ProviderModelsSection({
                         variant="ghost"
                         className={cn(
                           "size-5 rounded-sm p-0 text-muted-foreground hover:text-foreground",
-                          isFavorite && "text-yellow-500 hover:text-yellow-600",
+                          isFavorite && "text-warning-foreground hover:text-warning",
                         )}
                         onClick={() => handleToggleFavorite(model.slug)}
                         aria-label={`${isFavorite ? "Remove" : "Add"} ${model.name} ${

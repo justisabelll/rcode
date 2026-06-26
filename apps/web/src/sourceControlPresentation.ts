@@ -1,4 +1,4 @@
-import { GitPullRequestIcon } from "lucide-react";
+import { GitPullRequestIcon } from "~/lib/icons";
 import type { ElementType } from "react";
 import type { SourceControlProviderInfo } from "@t3tools/contracts";
 export {

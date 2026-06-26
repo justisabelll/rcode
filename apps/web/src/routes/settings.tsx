@@ -1,4 +1,4 @@
-import { RotateCcwIcon } from "lucide-react";
+import { RotateCcwIcon } from "~/lib/icons";
 import {
   Outlet,
   createFileRoute,

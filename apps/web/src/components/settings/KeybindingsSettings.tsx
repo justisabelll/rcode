@@ -9,7 +9,7 @@ import {
   SearchIcon,
   TriangleAlertIcon,
   XIcon,
-} from "lucide-react";
+} from "~/lib/icons";
 import {
   type KeyboardEvent,
   type ReactNode,

@@ -7,7 +7,7 @@ import {
   FolderGitIcon,
   FolderIcon,
   MonitorIcon,
-} from "lucide-react";
+} from "~/lib/icons";
 import { memo, useMemo } from "react";
 
 import { useComposerDraftStore, type DraftId } from "../composerDraftStore";

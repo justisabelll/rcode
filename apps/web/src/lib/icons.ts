@@ -1,0 +1,168 @@
+/**
+ * App icon set — Vercel Geist Icons.
+ *
+ * This module is the single source of truth for the app's UI icons. It re-exports
+ * Vercel's Geist icon set (`geist-icons`) under the names the codebase already uses,
+ * so call sites keep importing the same identifiers — only the import source changes
+ * from "lucide-react" to "~/lib/icons".
+ *
+ * A small set of specialized glyphs that Geist doesn't currently cover (split-views,
+ * panel-layout toggles, pilcrow, QR, flask, wifi-off, etc.) fall back to lucide-react
+ * to preserve their exact meaning. Brand/provider logos live in ~/components/Icons.
+ */
+import type { FC, SVGProps } from "react";
+
+/**
+ * Permissive icon component type (assignable from Geist, lucide, and brand icons).
+ * `color` is narrowed to `string` (no `undefined`) to match Geist's strict prop
+ * typing under `exactOptionalPropertyTypes`.
+ */
+export type LucideIcon = FC<
+  Omit<SVGProps<SVGSVGElement>, "color"> & { color?: string; size?: string | number }
+>;
+
+// ── Geist icons whose name already matches the call site ───────────────────────
+export {
+  ArrowLeft,
+  ArrowRight,
+  Camera,
+  ChevronRight,
+  Eye,
+  Globe,
+  LoaderCircle,
+  Minus,
+  MoreVertical,
+  Plus,
+} from "geist-icons";
+
+// ── Geist icons re-exported under the codebase's existing (lucide-style) names ──
+export {
+  Archive as ArchiveIcon,
+  ArrowCircleUp as ArrowUpCircleIcon,
+  ArrowDown as ArrowDownIcon,
+  ArrowLeft as ArrowLeftIcon,
+  ArrowRight as ArrowRightIcon,
+  ArrowUp as ArrowUpIcon,
+  ArrowUpDown as ArrowUpDownIcon,
+  BranchPlus as GitBranchPlusIcon,
+  Bug as BugIcon,
+  Check as CheckIcon,
+  CheckCircle as CircleCheckIcon,
+  ChevronDown as ChevronDownIcon,
+  ChevronLeft as ChevronLeftIcon,
+  ChevronRight as ChevronRightIcon,
+  ChevronUp as ChevronUpIcon,
+  Clipboard as ClipboardList,
+  Cloud as CloudIcon,
+  CloudUpload as CloudUploadIcon,
+  Code as Code2,
+  Copy as CopyIcon,
+  CornerLeftUp as CornerLeftUpIcon,
+  CursorClick as MousePointerClick,
+  CursorClick as MousePointerClickIcon,
+  Cross as X,
+  Cross as XIcon,
+  CrossCircle as CircleXIcon,
+  Cursor as MousePointer2,
+  Display as MonitorIcon,
+  Download as DownloadIcon,
+  External as ExternalLink,
+  External as ExternalLinkIcon,
+  Eye as EyeIcon,
+  EyeOff as EyeOffIcon,
+  File as FileIcon,
+  FolderClosed as FolderClosedIcon,
+  FolderClosed as FolderIcon,
+  FolderOpen as FolderOpenIcon,
+  FolderPlus as FolderPlusIcon,
+  Fullscreen as Maximize2Icon,
+  FullscreenClose as Minimize2Icon,
+  GitBranch as GitBranchIcon,
+  GitCommit as GitCommitIcon,
+  GitPullRequest as GitPullRequestIcon,
+  Globe as Globe2,
+  Globe as Globe2Icon,
+  Globe as GlobeIcon,
+  Information as InfoIcon,
+  Lightning as ZapIcon,
+  Link as Link2Icon,
+  Link as LinkIcon,
+  LoaderCircle as Loader2Icon,
+  LoaderCircle as LoaderCircleIcon,
+  LoaderCircle as LoaderIcon,
+  LockClosed as LockIcon,
+  LockOpen as LockOpenIcon,
+  CodeWrap as TextWrapIcon,
+  CodeWrap as WrapTextIcon,
+  MagnifyingGlass as Search,
+  MagnifyingGlass as SearchIcon,
+  Message as MessageCircle,
+  Message as MessageCircleIcon,
+  Message as MessageSquareIcon,
+  Minus as MinusIcon,
+  MoreHorizontal as EllipsisIcon,
+  Pen as PenLine,
+  Pen as PenLineIcon,
+  PencilEdit as SquarePenIcon,
+  PhoneDevice as SmartphoneIcon,
+  Play as PlayIcon,
+  Plus as PlusIcon,
+  RefreshClockwise as RefreshCw,
+  RefreshClockwise as RefreshCwIcon,
+  Robot as BotIcon,
+  RotateClockwise as RotateCw,
+  RotateClockwise as RotateCwIcon,
+  RotateCounterClockwise as RotateCcw,
+  RotateCounterClockwise as RotateCcwIcon,
+  SettingsGear as SettingsIcon,
+  SettingsSliders as Settings2Icon,
+  SignIn as LogInIcon,
+  Sparkles as SparklesIcon,
+  Star as StarIcon,
+  Terminal as TerminalIcon,
+  TerminalWindow as TerminalSquare,
+  Trash as Trash2,
+  Trash as Trash2Icon,
+  Warning as AlertTriangleIcon,
+  Warning as TriangleAlertIcon,
+  Wrench as WrenchIcon,
+} from "geist-icons";
+
+// ── Specialized glyphs not (yet) in Geist — kept on lucide to preserve meaning ──
+export {
+  ArchiveX,
+  ChevronsLeftRightEllipsisIcon,
+  ChevronsUpDownIcon,
+  CircleAlertIcon,
+  Columns2Icon,
+  FileDiff,
+  FileJsonIcon,
+  Files,
+  FlaskConicalIcon,
+  FolderGit2Icon,
+  FolderGitIcon,
+  FolderTree,
+  Frame,
+  HammerIcon,
+  KeyboardIcon,
+  ListChecksIcon,
+  ListTodoIcon,
+  Paintbrush,
+  PaintbrushIcon,
+  PanelBottomIcon,
+  PanelLeftCloseIcon,
+  PanelLeftIcon,
+  PanelRightIcon,
+  PencilRulerIcon,
+  PilcrowIcon,
+  PipetteIcon,
+  QrCodeIcon,
+  RadioTower,
+  Rows3Icon,
+  MoonIcon,
+  SquareSplitHorizontal,
+  SquareSplitVertical,
+  SunIcon,
+  Undo2Icon,
+  WifiOffIcon,
+} from "lucide-react";

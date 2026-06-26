@@ -16,7 +16,7 @@ import {
   Rows3Icon,
   SearchIcon,
   TextWrapIcon,
-} from "lucide-react";
+} from "~/lib/icons";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useOpenInPreferredEditor } from "../editorPreferences";
 import { type DraftId } from "../composerDraftStore";
@@ -763,7 +763,7 @@ export default function DiffPanel({ mode = "inline", composerDraftTarget }: Diff
             )}
             {selectedPatchError && !renderablePatch && (
               <div className="px-3">
-                <p className="mb-2 text-[11px] text-red-500/80">{selectedPatchError}</p>
+                <p className="mb-2 text-[11px] text-destructive">{selectedPatchError}</p>
               </div>
             )}
             {!renderablePatch ? (

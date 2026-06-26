@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { LinkIcon, PlusIcon } from "lucide-react";
+import { LinkIcon, PlusIcon } from "~/lib/icons";
 
 import { NoActiveThreadState } from "../components/NoActiveThreadState";
 import { Button } from "../components/ui/button";

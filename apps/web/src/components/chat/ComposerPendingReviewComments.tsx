@@ -1,4 +1,4 @@
-import { MessageCircle, X } from "lucide-react";
+import { MessageCircle, X } from "~/lib/icons";
 
 import {
   COMPOSER_INLINE_CHIP_CLASS_NAME,

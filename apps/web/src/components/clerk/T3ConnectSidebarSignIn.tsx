@@ -1,5 +1,5 @@
 import { UserButton, useAuth } from "@clerk/react";
-import { LogInIcon, SmartphoneIcon } from "lucide-react";
+import { LogInIcon, SmartphoneIcon } from "~/lib/icons";
 
 import { hasCloudPublicConfig } from "../../cloud/publicConfig";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar";

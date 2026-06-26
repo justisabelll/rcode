@@ -15,7 +15,7 @@ import {
   ChevronRightIcon,
   EllipsisIcon,
   LoaderIcon,
-} from "lucide-react";
+} from "~/lib/icons";
 import { cn } from "~/lib/utils";
 import type { ActivePlanState } from "../session-logic";
 import type { LatestProposedPlanState } from "../session-logic";
@@ -213,8 +213,8 @@ const PlanSidebar = memo(function PlanSidebar({
                   key={`${step.status}:${step.step}`}
                   className={cn(
                     "flex items-center gap-2.5 rounded-lg px-2.5 py-2 transition-colors duration-200",
-                    step.status === "inProgress" && "bg-blue-500/5",
-                    step.status === "completed" && "bg-emerald-500/5",
+                    step.status === "inProgress" && "bg-primary/5",
+                    step.status === "completed" && "bg-success/5",
                   )}
                 >
                   {stepStatusIcon(step.status)}

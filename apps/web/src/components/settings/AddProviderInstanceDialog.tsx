@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckIcon } from "lucide-react";
+import { CheckIcon } from "~/lib/icons";
 import { Radio as RadioPrimitive } from "@base-ui/react/radio";
 import { useCallback, useMemo, useState } from "react";
 import {
@@ -217,7 +217,7 @@ export function AddProviderInstanceDialog({ open, onOpenChange }: AddProviderIns
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogPopup className="max-w-xl overflow-hidden">
-        <div className="flex min-h-0 flex-col overflow-hidden border-foreground/10 bg-background shadow-2xl">
+        <div className="flex min-h-0 flex-col overflow-hidden border-border bg-background">
           <DialogHeader className="border-b border-border/70 bg-background">
             <DialogTitle>Add provider instance</DialogTitle>
             <DialogDescription>
@@ -232,7 +232,7 @@ export function AddProviderInstanceDialog({ open, onOpenChange }: AddProviderIns
                   className={cn(
                     "grid min-w-0 grid-cols-[1rem_minmax(0,1fr)] gap-x-2 rounded-lg border px-3 py-2 text-left",
                     index === wizardStep
-                      ? "border-primary bg-primary/10 ring-1 ring-primary/25"
+                      ? "border-primary bg-primary/8"
                       : index < wizardStep
                         ? "border-border bg-background"
                         : "border-border bg-muted/40",
@@ -295,7 +295,7 @@ export function AddProviderInstanceDialog({ open, onOpenChange }: AddProviderIns
                           "relative flex cursor-pointer items-center gap-3 rounded-lg border px-3 py-3 text-left outline-none transition-[background-color,border-color,box-shadow]",
                           "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background",
                           isSelected
-                            ? "border-primary bg-background shadow-sm ring-2 ring-primary/35"
+                            ? "border-primary bg-primary/5"
                             : "border-border bg-background hover:border-foreground/20 hover:bg-muted/50",
                         )}
                       >
@@ -379,7 +379,7 @@ export function AddProviderInstanceDialog({ open, onOpenChange }: AddProviderIns
                     value={normalizeProviderAccentColor(accentColor) ?? PROVIDER_ACCENT_SWATCHES[0]}
                     onChange={(event) => setAccentColor(event.target.value)}
                     aria-label="Provider instance accent color"
-                    className="h-8 w-10 cursor-pointer rounded-xl border border-input bg-background p-0.5"
+                    className="h-8 w-10 cursor-pointer rounded-lg border border-input bg-background p-0.5"
                   />
                   <div className="flex flex-wrap gap-1.5">
                     {PROVIDER_ACCENT_SWATCHES.map((swatch) => {

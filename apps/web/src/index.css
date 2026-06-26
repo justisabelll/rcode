@@ -37,10 +37,10 @@
 @theme inline {
   --animate-skeleton: skeleton 2s -1s infinite linear;
   --font-sans:
-    "DM Sans Variable", "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui,
-    sans-serif;
+    "Geist Variable", "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   --font-mono:
-    "SF Mono", "SFMono-Regular", "JetBrains Mono", Consolas, "Liberation Mono", Menlo, monospace;
+    "Geist Mono Variable", "Geist Mono", ui-monospace, "SF Mono", "SFMono-Regular",
+    "JetBrains Mono", Menlo, Consolas, "Liberation Mono", monospace;
   --color-warning-foreground: var(--warning-foreground);
   --color-warning: var(--warning);
   --color-success-foreground: var(--success-foreground);
@@ -66,13 +66,14 @@
   --color-card: var(--card);
   --color-foreground: var(--foreground);
   --color-background: var(--background);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
+  /* Geist radius scale: 6px for controls, 12px for cards/menus, larger for panels. */
+  --radius-sm: 0.25rem; /* 4px  — chips, kbd, small badges */
+  --radius-md: 0.375rem; /* 6px  — compact controls */
+  --radius-lg: 0.375rem; /* 6px  — buttons, inputs (Vercel control radius) */
+  --radius-xl: 0.625rem; /* 10px — small cards, popovers */
+  --radius-2xl: 0.75rem; /* 12px — cards, dialogs, menus */
+  --radius-3xl: 1rem; /* 16px — large/full-screen surfaces */
+  --radius-4xl: 1.25rem; /* 20px — hero containers */
   @keyframes skeleton {
     to {
       background-position: -200% 0;
@@ -153,29 +154,29 @@
 
   .chat-composer-glass,
   .chat-composer-lower-chrome {
-    background: color-mix(in srgb, var(--card) 20%, transparent);
+    background: var(--app-chrome-background);
   }
 
   .chat-composer-glass {
     box-shadow:
-      0 18px 48px -20px rgb(0 0 0 / 28%),
-      0 4px 14px -7px rgb(0 0 0 / 22%);
+      0 -1px 0 0 var(--border),
+      0 -10px 24px -20px rgb(0 0 0 / 14%);
   }
 
   .chat-composer-shared-blur {
-    -webkit-backdrop-filter: blur(16px);
-    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 
   .dark .chat-composer-glass,
   .dark .chat-composer-lower-chrome {
-    background: color-mix(in srgb, var(--card) 45%, transparent);
+    background: var(--app-chrome-background);
   }
 
   .dark .chat-composer-glass {
     box-shadow:
-      0 18px 48px -20px rgb(0 0 0 / 60%),
-      0 4px 14px -7px rgb(0 0 0 / 40%);
+      0 -1px 0 0 var(--border),
+      0 -12px 28px -20px rgb(0 0 0 / 55%);
   }
 
   .chat-composer-lower-chrome {
@@ -226,69 +227,155 @@
 
 :root {
   color-scheme: light;
-  --radius: 0.625rem;
-  --background: var(--color-white);
-  --app-chrome-background: var(--background);
-  --foreground: var(--color-neutral-800);
-  --card: var(--color-white);
-  --card-foreground: var(--color-neutral-800);
-  --popover: var(--color-white);
-  --popover-foreground: var(--color-neutral-800);
-  --primary: oklch(0.488 0.217 264);
-  --primary-foreground: var(--color-white);
-  --secondary: --alpha(var(--color-black) / 4%);
-  --secondary-foreground: var(--color-neutral-800);
-  --muted: --alpha(var(--color-black) / 4%);
-  --muted-foreground: color-mix(in srgb, var(--color-neutral-500) 90%, var(--color-black));
-  --accent: --alpha(var(--color-black) / 4%);
-  --accent-foreground: var(--color-neutral-800);
-  --destructive: var(--color-red-500);
-  --border: --alpha(var(--color-black) / 8%);
-  --input: --alpha(var(--color-black) / 10%);
-  --ring: oklch(0.488 0.217 264);
-  --destructive-foreground: var(--color-red-700);
-  --info: var(--color-blue-500);
-  --info-foreground: var(--color-blue-700);
-  --success: var(--color-emerald-500);
-  --success-foreground: var(--color-emerald-700);
-  --warning: var(--color-amber-500);
-  --warning-foreground: var(--color-amber-700);
+  --radius: 0.375rem; /* 6px — Vercel control radius */
+
+  /* ============================================================
+     Geist palette — Light
+     Raw design-system scale (--ds-*). Semantic tokens below map
+     onto these so the whole app inherits the Vercel look.
+     ============================================================ */
+  --ds-bg-100: #ffffff; /* content surfaces */
+  --ds-bg-200: #fafafa; /* app shell / subtle separation */
+
+  --ds-gray-100: #f2f2f2;
+  --ds-gray-200: #ebebeb;
+  --ds-gray-300: #e6e6e6;
+  --ds-gray-400: #eaeaea;
+  --ds-gray-500: #c9c9c9;
+  --ds-gray-600: #a8a8a8;
+  --ds-gray-700: #8f8f8f;
+  --ds-gray-800: #7d7d7d;
+  --ds-gray-900: #4d4d4d; /* secondary text/icons */
+  --ds-gray-1000: #171717; /* primary text/icons */
+
+  --ds-gray-a-100: rgba(0, 0, 0, 0.05);
+  --ds-gray-a-200: rgba(0, 0, 0, 0.08);
+  --ds-gray-a-300: rgba(0, 0, 0, 0.1);
+  --ds-gray-a-400: rgba(0, 0, 0, 0.08);
+  --ds-gray-a-500: rgba(0, 0, 0, 0.21);
+  --ds-gray-a-600: rgba(0, 0, 0, 0.24);
+  --ds-gray-a-700: rgba(0, 0, 0, 0.44);
+  --ds-gray-a-800: rgba(0, 0, 0, 0.51);
+  --ds-gray-a-900: rgba(0, 0, 0, 0.7);
+  --ds-gray-a-1000: rgba(0, 0, 0, 0.91);
+
+  --ds-blue-accent: #006bff; /* solid accent / primary action */
+  --ds-blue-link: #0059ec; /* readable link & info text (AA on white) */
+
+  --ds-red-solid: #ea001d; /* destructive fill */
+  --ds-red-text: #d8001b; /* destructive text */
+  --ds-amber-solid: #ffae00; /* warning fill */
+  --ds-amber-text: #aa4d00; /* warning text */
+  --ds-green-solid: #28a948; /* success fill */
+  --ds-green-text: #107d32; /* success text */
+
+  /* ============================================================
+     Semantic tokens — Light
+     ============================================================ */
+  --background: var(--ds-bg-100);
+  --app-chrome-background: var(--ds-bg-200);
+  --foreground: var(--ds-gray-1000);
+  --card: var(--ds-bg-100);
+  --card-foreground: var(--ds-gray-1000);
+  --popover: var(--ds-bg-100);
+  --popover-foreground: var(--ds-gray-1000);
+  --primary: var(--ds-blue-accent);
+  --primary-foreground: #ffffff;
+  --secondary: var(--ds-gray-a-100);
+  --secondary-foreground: var(--ds-gray-1000);
+  --muted: var(--ds-gray-a-100);
+  --muted-foreground: var(--ds-gray-900);
+  --accent: var(--ds-gray-a-100);
+  --accent-foreground: var(--ds-gray-1000);
+  --destructive: var(--ds-red-solid);
+  --destructive-foreground: var(--ds-red-text);
+  --border: var(--ds-gray-a-200);
+  --input: var(--ds-gray-a-300);
+  --ring: var(--ds-blue-accent);
+  --info: var(--ds-blue-accent);
+  --info-foreground: var(--ds-blue-link);
+  --success: var(--ds-green-solid);
+  --success-foreground: var(--ds-green-text);
+  --warning: var(--ds-amber-solid);
+  --warning-foreground: var(--ds-amber-text);
 
   @variant dark {
     color-scheme: dark;
-    --background: color-mix(in srgb, var(--color-neutral-950) 95%, var(--color-white));
-    --app-chrome-background: var(--background);
-    --foreground: var(--color-neutral-100);
-    --card: color-mix(in srgb, var(--background) 98%, var(--color-white));
-    --card-foreground: var(--color-neutral-100);
-    --popover: color-mix(in srgb, var(--background) 98%, var(--color-white));
-    --popover-foreground: var(--color-neutral-100);
-    --primary: oklch(0.588 0.217 264);
-    --primary-foreground: var(--color-white);
-    --secondary: --alpha(var(--color-white) / 4%);
-    --secondary-foreground: var(--color-neutral-100);
-    --muted: --alpha(var(--color-white) / 4%);
-    --muted-foreground: color-mix(in srgb, var(--color-neutral-500) 90%, var(--color-white));
-    --accent: --alpha(var(--color-white) / 4%);
-    --accent-foreground: var(--color-neutral-100);
-    --destructive: color-mix(in srgb, var(--color-red-500) 90%, var(--color-white));
-    --border: --alpha(var(--color-white) / 6%);
-    --input: --alpha(var(--color-white) / 8%);
-    --ring: oklch(0.588 0.217 264);
-    --destructive-foreground: var(--color-red-400);
-    --info: var(--color-blue-500);
-    --info-foreground: var(--color-blue-400);
-    --success: var(--color-emerald-500);
-    --success-foreground: var(--color-emerald-400);
-    --warning: var(--color-amber-500);
-    --warning-foreground: var(--color-amber-400);
+
+    /* ==========================================================
+       Geist palette — Dark (near-black surfaces, inverted grays)
+       ========================================================== */
+    --ds-bg-100: #000000; /* content surfaces */
+    --ds-bg-200: #0a0a0a; /* elevated cards / sidebar lift */
+
+    --ds-gray-100: #1a1a1a;
+    --ds-gray-200: #1f1f1f;
+    --ds-gray-300: #292929;
+    --ds-gray-400: #2e2e2e;
+    --ds-gray-500: #454545;
+    --ds-gray-600: #878787;
+    --ds-gray-700: #8f8f8f;
+    --ds-gray-800: #a1a1a1;
+    --ds-gray-900: #a0a0a0; /* secondary text/icons */
+    --ds-gray-1000: #ededed; /* primary text/icons */
+
+    --ds-gray-a-100: rgba(255, 255, 255, 0.07);
+    --ds-gray-a-200: rgba(255, 255, 255, 0.09);
+    --ds-gray-a-300: rgba(255, 255, 255, 0.12);
+    --ds-gray-a-400: rgba(255, 255, 255, 0.14);
+    --ds-gray-a-500: rgba(255, 255, 255, 0.21);
+    --ds-gray-a-600: rgba(255, 255, 255, 0.27);
+    --ds-gray-a-700: rgba(255, 255, 255, 0.44);
+    --ds-gray-a-800: rgba(255, 255, 255, 0.55);
+    --ds-gray-a-900: rgba(255, 255, 255, 0.74);
+    --ds-gray-a-1000: rgba(255, 255, 255, 0.92);
+
+    --ds-blue-accent: #006efe; /* solid accent / primary action */
+    --ds-blue-link: #52a8ff; /* readable link & info text on black */
+
+    --ds-red-solid: #e2162a;
+    --ds-red-text: #ff6166;
+    --ds-amber-solid: #ffae00;
+    --ds-amber-text: #f5b73c;
+    --ds-green-solid: #2bb24a;
+    --ds-green-text: #62d178;
+
+    /* ==========================================================
+       Semantic tokens — Dark
+       ========================================================== */
+    --background: var(--ds-bg-100);
+    --app-chrome-background: var(--ds-bg-100);
+    --foreground: var(--ds-gray-1000);
+    --card: var(--ds-bg-200);
+    --card-foreground: var(--ds-gray-1000);
+    --popover: var(--ds-bg-200);
+    --popover-foreground: var(--ds-gray-1000);
+    --primary: var(--ds-blue-accent);
+    --primary-foreground: #ffffff;
+    --secondary: var(--ds-gray-a-100);
+    --secondary-foreground: var(--ds-gray-1000);
+    --muted: var(--ds-gray-a-100);
+    --muted-foreground: var(--ds-gray-900);
+    --accent: var(--ds-gray-a-100);
+    --accent-foreground: var(--ds-gray-1000);
+    --destructive: var(--ds-red-solid);
+    --destructive-foreground: var(--ds-red-text);
+    --border: var(--ds-gray-a-200);
+    --input: var(--ds-gray-a-300);
+    --ring: #47a8ff;
+    --info: var(--ds-blue-accent);
+    --info-foreground: var(--ds-blue-link);
+    --success: var(--ds-green-solid);
+    --success-foreground: var(--ds-green-text);
+    --warning: var(--ds-amber-solid);
+    --warning-foreground: var(--ds-amber-text);
   }
 }
 
 body {
   font-family:
-    "DM Sans Variable",
-    "DM Sans",
+    "Geist Variable",
+    "Geist",
     -apple-system,
     BlinkMacSystemFont,
     "Segoe UI",
@@ -296,6 +383,9 @@ body {
     sans-serif;
   margin: 0;
   padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 html,
@@ -320,21 +410,11 @@ body {
   padding-top: max(env(safe-area-inset-top), 0px);
 }
 
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.035;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 256px 256px;
-}
-
 pre,
 code {
   font-family:
-    "SF Mono", "SFMono-Regular", "JetBrains Mono", Consolas, "Liberation Mono", Menlo, monospace;
+    "Geist Mono Variable", "Geist Mono", ui-monospace, "SF Mono", "SFMono-Regular",
+    "JetBrains Mono", Menlo, Consolas, "Liberation Mono", monospace;
 }
 
 /* Window drag region (frameless titlebar) */

@@ -93,8 +93,8 @@ import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from "../
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import { toastManager } from "../ui/toast";
 import {
-  BotIcon,
   CircleAlertIcon,
+  Code2,
   ListTodoIcon,
   PencilRulerIcon,
   type LucideIcon,
@@ -102,7 +102,7 @@ import {
   LockOpenIcon,
   PenLineIcon,
   XIcon,
-} from "lucide-react";
+} from "~/lib/icons";
 import { proposedPlanTitle } from "../../proposedPlan";
 import { getProviderDisplayName, getProviderInteractionModeToggle } from "../../providerModels";
 import {
@@ -222,7 +222,7 @@ const ComposerFooterModeControls = memo(function ComposerFooterModeControls(prop
               className={cn(
                 "shrink-0 whitespace-nowrap px-2 sm:px-3",
                 props.interactionMode === "plan"
-                  ? "bg-blue-500/10 text-blue-400 hover:bg-blue-500/15 hover:text-blue-300"
+                  ? "bg-info/10 text-info-foreground hover:bg-info/15"
                   : "text-muted-foreground/70 hover:text-foreground/80",
               )}
               size="sm"
@@ -235,7 +235,7 @@ const ComposerFooterModeControls = memo(function ComposerFooterModeControls(prop
           {props.interactionMode === "plan" ? (
             <PencilRulerIcon className="text-current opacity-100" />
           ) : (
-            <BotIcon />
+            <Code2 />
           )}
           <span className="sr-only sm:not-sr-only">
             {props.interactionMode === "plan" ? "Plan" : "Build"}
@@ -304,7 +304,7 @@ const ComposerFooterModeControls = memo(function ComposerFooterModeControls(prop
                   className={cn(
                     "shrink-0 whitespace-nowrap px-2 sm:px-3",
                     props.planSidebarOpen
-                      ? "bg-blue-500/10 text-blue-400 hover:bg-blue-500/15 hover:text-blue-300"
+                      ? "bg-info/10 text-info-foreground hover:bg-info/15"
                       : "text-muted-foreground/70 hover:text-foreground/80",
                   )}
                   size="sm"
@@ -2049,7 +2049,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
     >
       <div
         className={cn(
-          "group rounded-[22px] p-px transition-colors duration-200",
+          "group rounded-[14px] p-px transition-colors duration-200",
           composerProviderState.composerFrameClassName,
         )}
         onDragEnter={onComposerDragEnter}
@@ -2061,7 +2061,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
           ref={composerSurfaceRef}
           data-chat-composer-mobile-collapsed={isComposerCollapsedMobile ? "true" : "false"}
           className={cn(
-            "chat-composer-glass rounded-[20px] border transition-colors duration-200 has-focus-visible:border-ring/45",
+            "chat-composer-glass rounded-2xl border transition-colors duration-200 has-focus-visible:border-ring/45",
             isDragOverComposer ? "border-primary/70 bg-accent/45" : "border-border",
             environmentUnavailable ? "opacity-75" : null,
             composerProviderState.composerSurfaceClassName,
@@ -2087,14 +2087,14 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
         >
           {!isComposerCollapsedMobile &&
             (activePendingApproval ? (
-              <div className="rounded-t-[19px] border-b border-border/65 bg-muted/20">
+              <div className="rounded-t-[11px] border-b border-border/65 bg-muted/20">
                 <ComposerPendingApprovalPanel
                   approval={activePendingApproval}
                   pendingCount={pendingApprovals.length}
                 />
               </div>
             ) : pendingUserInputs.length > 0 ? (
-              <div className="rounded-t-[19px] border-b border-border/65 bg-muted/20">
+              <div className="rounded-t-[11px] border-b border-border/65 bg-muted/20">
                 <ComposerPendingUserInputPanel
                   pendingUserInputs={pendingUserInputs}
                   respondingRequestIds={respondingRequestIds}
@@ -2105,7 +2105,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
                 />
               </div>
             ) : showPlanFollowUpPrompt && activeProposedPlan ? (
-              <div className="rounded-t-[19px] border-b border-border/65 bg-muted/20">
+              <div className="rounded-t-[11px] border-b border-border/65 bg-muted/20">
                 <ComposerPlanFollowUpBanner
                   key={activeProposedPlan.id}
                   planTitle={proposedPlanTitle(activeProposedPlan.planMarkdown) ?? null}
@@ -2115,7 +2115,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
 
           {isComposerCollapsedMobile && activePendingApproval ? (
             <div
-              className="rounded-t-[19px] border-b border-border/65 bg-muted/20"
+              className="rounded-t-[11px] border-b border-border/65 bg-muted/20"
               data-chat-composer-collapsed-controls="true"
             >
               <ComposerPendingApprovalPanel
@@ -2132,7 +2132,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
             </div>
           ) : isComposerCollapsedMobile && pendingUserInputs.length > 0 ? (
             <div
-              className="rounded-t-[19px] border-b border-border/65 bg-muted/20"
+              className="rounded-t-[11px] border-b border-border/65 bg-muted/20"
               data-chat-composer-collapsed-controls="true"
             >
               <ComposerPendingUserInputPanel
@@ -2147,7 +2147,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
                 <div
                   data-chat-composer-mobile-pending-compact="true"
                   className={cn(
-                    "flex min-w-0 items-center gap-2 rounded-lg border border-border/55 bg-background/55 p-1.5 pl-3 transition-colors hover:bg-background/80",
+                    "flex min-w-0 items-center gap-2 rounded-lg border border-border bg-background p-1.5 pl-3 transition-colors hover:bg-accent",
                     !activePendingProgress?.activeQuestion?.multiSelect && "p-0",
                   )}
                 >
@@ -2210,7 +2210,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
               </button>
               <button
                 type="button"
-                className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/90 text-primary-foreground disabled:opacity-30"
+                className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-30"
                 disabled={collapsedComposerPrimaryActionDisabled}
                 aria-label={collapsedComposerPrimaryActionLabel}
                 onPointerDown={(event) => event.preventDefault()}
@@ -2320,7 +2320,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
                     .map((image) => (
                       <div
                         key={image.id}
-                        className="relative h-16 w-16 overflow-hidden rounded-lg border border-border/80 bg-background"
+                        className="relative h-16 w-16 overflow-hidden rounded-lg border border-border bg-background"
                       >
                         {image.previewUrl ? (
                           <button
@@ -2351,7 +2351,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
                                 <span
                                   role="img"
                                   aria-label="Draft attachment may not persist"
-                                  className="absolute left-1 top-1 inline-flex items-center justify-center rounded bg-background/85 p-0.5 text-amber-600"
+                                  className="absolute left-1 top-1 inline-flex items-center justify-center rounded bg-background/85 p-0.5 text-warning-foreground"
                                 >
                                   <CircleAlertIcon className="size-3" />
                                 </span>

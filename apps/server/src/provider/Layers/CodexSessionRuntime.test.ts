@@ -206,6 +206,17 @@ describe("T3 browser developer instructions", () => {
       NodeAssert.match(instructions, /Do not switch to global browser skills/);
     }
   });
+
+  it("makes request_user_input available in both collaboration modes", () => {
+    NodeAssert.match(CODEX_DEFAULT_MODE_DEVELOPER_INSTRUCTIONS, /request_user_input/);
+    NodeAssert.match(CODEX_DEFAULT_MODE_DEVELOPER_INSTRUCTIONS, /available in Default mode/);
+    NodeAssert.doesNotMatch(
+      CODEX_DEFAULT_MODE_DEVELOPER_INSTRUCTIONS,
+      /unavailable in Default mode/,
+    );
+    NodeAssert.match(CODEX_PLAN_MODE_DEVELOPER_INSTRUCTIONS, /request_user_input/);
+    NodeAssert.match(CODEX_PLAN_MODE_DEVELOPER_INSTRUCTIONS, /Strongly prefer using/);
+  });
 });
 
 describe("hasConfiguredMcpServer", () => {

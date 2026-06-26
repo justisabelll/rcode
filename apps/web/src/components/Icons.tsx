@@ -1,7 +1,7 @@
 import React, { type SVGProps, useId } from "react";
 import { cn } from "~/lib/utils";
 
-export type Icon = React.FC<SVGProps<SVGSVGElement>>;
+export type Icon = React.FC<Omit<SVGProps<SVGSVGElement>, "color"> & { color?: string }>;
 
 export const GitHubIcon: Icon = (props) => (
   <svg {...props} viewBox="0 0 1024 1024" fill="none">

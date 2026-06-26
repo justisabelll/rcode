@@ -6,7 +6,7 @@ import {
   summarizeTurnDiffStats,
   type TurnDiffTreeNode,
 } from "../../lib/turnDiffTree";
-import { ChevronRightIcon, FolderIcon, FolderClosedIcon } from "lucide-react";
+import { ChevronRightIcon, FolderIcon, FolderClosedIcon } from "~/lib/icons";
 import { cn } from "~/lib/utils";
 import { DiffStatLabel, hasNonZeroStat } from "./DiffStatLabel";
 import { PierreEntryIcon } from "./PierreEntryIcon";

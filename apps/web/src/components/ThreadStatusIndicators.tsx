@@ -4,7 +4,7 @@ import {
   scopeThreadRef,
 } from "@t3tools/client-runtime/environment";
 import type { VcsStatusResult } from "@t3tools/contracts";
-import { CloudIcon, FolderGit2Icon, GitPullRequestIcon, TerminalIcon } from "lucide-react";
+import { CloudIcon, FolderGit2Icon, GitPullRequestIcon, TerminalIcon } from "~/lib/icons";
 import { useMemo } from "react";
 import { useEnvironment, usePrimaryEnvironmentId } from "../state/environments";
 import { useProject } from "../state/entities";
@@ -43,7 +43,7 @@ export function prStatusIndicator(
   if (pr.state === "open") {
     return {
       label: `${presentation.shortName} open`,
-      colorClass: "text-emerald-600 dark:text-emerald-300/90",
+      colorClass: "text-success-foreground",
       tooltip: `#${pr.number} ${presentation.shortName} open: ${pr.title}`,
       url: pr.url,
     };
@@ -51,7 +51,7 @@ export function prStatusIndicator(
   if (pr.state === "closed") {
     return {
       label: `${presentation.shortName} closed`,
-      colorClass: "text-zinc-500 dark:text-zinc-400/80",
+      colorClass: "text-muted-foreground",
       tooltip: `#${pr.number} ${presentation.shortName} closed: ${pr.title}`,
       url: pr.url,
     };

@@ -4,7 +4,7 @@ import {
   type ServerProviderSkill,
   type ServerProviderSlashCommand,
 } from "@t3tools/contracts";
-import { BotIcon } from "lucide-react";
+import { BotIcon } from "~/lib/icons";
 import { memo, useLayoutEffect, useMemo, useRef } from "react";
 
 import { type ComposerSlashCommand, type ComposerTriggerKind } from "../../composer-logic";
@@ -141,7 +141,7 @@ export const ComposerCommandMenu = memo(function ComposerCommandMenu(props: {
     >
       <div
         ref={listRef}
-        className="relative w-full overflow-hidden rounded-[20px] border border-border/80 bg-popover/96 shadow-lg/8 backdrop-blur-xs"
+        className="relative w-full overflow-hidden rounded-2xl border border-border bg-popover shadow-lg/8"
       >
         {props.items.length > 0 ? (
           <CommandList className="max-h-72">

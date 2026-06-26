@@ -11,7 +11,7 @@ import {
   TerminalSquare,
   Trash2,
   XIcon,
-} from "lucide-react";
+} from "~/lib/icons";
 import {
   type ResolvedKeybindingsConfig,
   type ScopedThreadRef,

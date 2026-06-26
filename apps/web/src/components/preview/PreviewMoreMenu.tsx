@@ -1,6 +1,6 @@
 "use client";
 
-import { Minus, MoreVertical, Plus as PlusIcon, RotateCcw } from "lucide-react";
+import { Minus, MoreVertical, Plus as PlusIcon, RotateCcw } from "~/lib/icons";
 
 import { Button } from "~/components/ui/button";
 import { Menu, MenuItem, MenuPopup, MenuSeparator, MenuTrigger } from "~/components/ui/menu";

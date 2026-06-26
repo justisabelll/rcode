@@ -29,7 +29,7 @@ import {
   MessageSquareIcon,
   SettingsIcon,
   SquarePenIcon,
-} from "lucide-react";
+} from "~/lib/icons";
 import {
   useCallback,
   useDeferredValue,

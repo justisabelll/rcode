@@ -1,6 +1,6 @@
 import type { EnvironmentId, ProjectEntry } from "@t3tools/contracts";
 import { FileTree, useFileTree } from "@pierre/trees/react";
-import { RefreshCw, Search } from "lucide-react";
+import { RefreshCw, Search } from "~/lib/icons";
 import { useEffect, useMemo, useRef } from "react";
 
 import { useTheme } from "~/hooks/useTheme";

@@ -212,6 +212,10 @@ function shouldBroadcastDownloadProgress(
   return nextStep !== previousStep || nextPercent === 100;
 }
 
+// RCode is a personal fork that ships no public update feed. A default build configures no
+// release feed (see resolveGitHubPublishConfig), so hasUpdateFeedConfig is false and the
+// binary auto-updater stays inert — it never pulls upstream releases over your build. Track
+// upstream via Fork Sync (source) and rebuild instead.
 function getAutoUpdateDisabledReason(args: {
   isDevelopment: boolean;
   isPackaged: boolean;

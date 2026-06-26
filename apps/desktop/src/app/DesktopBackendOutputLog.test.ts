@@ -10,7 +10,7 @@ import * as DesktopBackendOutputLog from "./DesktopBackendOutputLog.ts";
 import * as DesktopConfig from "./DesktopConfig.ts";
 import * as DesktopEnvironment from "./DesktopEnvironment.ts";
 
-const LOG_FILE_PATH = "/Users/alice/.t3/userdata/logs/server-child.log";
+const LOG_FILE_PATH = "/Users/alice/.rcode/userdata/logs/server-child.log";
 
 const environmentLayer = DesktopEnvironment.layer({
   dirname: "/repo/apps/desktop/dist-electron",
@@ -50,7 +50,7 @@ describe("DesktopBackendOutputLog", () => {
       _tag: "PermissionDenied",
       module: "FileSystem",
       method: "makeDirectory",
-      pathOrDescriptor: "/Users/alice/.t3/userdata/logs",
+      pathOrDescriptor: "/Users/alice/.rcode/userdata/logs",
       description: "private setup diagnostic",
     });
     const fileSystemLayer = FileSystem.layerNoop({

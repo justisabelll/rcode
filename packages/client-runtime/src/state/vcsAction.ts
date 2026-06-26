@@ -35,6 +35,12 @@ export const VcsActionOperation = Schema.Literals([
   "init",
   "publish_repository",
   "prepare_pull_request_thread",
+  "fork_sync_setup",
+  "fork_sync_update",
+  "fork_sync_push",
+  "fork_sync_resume",
+  "fork_sync_abort",
+  "fork_sync_agent_prompt",
 ]);
 export type VcsActionOperation = typeof VcsActionOperation.Type;
 

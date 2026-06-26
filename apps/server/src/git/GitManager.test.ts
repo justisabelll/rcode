@@ -581,6 +581,14 @@ function createGitHubCliWithFakeGh(scenario: FakeGhScenario = {}): {
           cwd: input.cwd,
           args: ["repo", "view", input.repository, "--json", "nameWithOwner,url,sshUrl"],
         }).pipe(Effect.map((result) => JSON.parse(result.stdout))),
+      getRepositoryForkInfo: (input) =>
+        Effect.fail(
+          new GitHubCli.GitHubCliCommandError({
+            command: "gh",
+            cwd: input.cwd,
+            cause: new Error(`Unexpected repository fork lookup: ${input.repository}`),
+          }),
+        ),
       createRepository: (input) =>
         Effect.fail(
           new GitHubCli.GitHubCliCommandError({

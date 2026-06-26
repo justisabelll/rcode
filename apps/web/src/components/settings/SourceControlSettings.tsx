@@ -47,8 +47,10 @@ import {
   JujutsuIcon,
   type Icon,
 } from "../Icons";
+import { ForkSyncControl } from "../ForkSyncControl";
 import { RedactedSensitiveText } from "./RedactedSensitiveText";
 import { SettingResetButton, SettingsPageContainer, SettingsSection } from "./settingsLayout";
+import { useProjects } from "../../state/entities";
 
 const EMPTY_DISCOVERY_RESULT: SourceControlDiscoveryResult = {
   versionControlSystems: [],
@@ -441,6 +443,7 @@ function EmptySourceControlDiscovery({
 
 export function SourceControlSettingsPanel() {
   const environmentId = usePrimaryEnvironment()?.environmentId ?? null;
+  const projects = useProjects().filter((project) => project.environmentId === environmentId);
   const discovery = useEnvironmentQuery(
     environmentId === null
       ? null
@@ -503,6 +506,30 @@ export function SourceControlSettingsPanel() {
               {result.sourceControlProviders.map((item) => (
                 <DiscoveryItemRow key={`provider:${item.kind}`} item={item} />
               ))}
+            </SettingsSection>
+          ) : null}
+
+          {projects.length > 0 ? (
+            <SettingsSection title="Fork Sync">
+              <div className="grid gap-3 border-t border-border/60 px-4 py-3.5 first:border-t-0 sm:px-5">
+                {projects.map((project) => (
+                  <div key={`${project.environmentId}:${project.id}`} className="grid gap-1.5">
+                    <div className="min-w-0">
+                      <p className="truncate text-xs font-semibold text-foreground">
+                        {project.title}
+                      </p>
+                      <p className="truncate font-mono text-[11px] text-muted-foreground">
+                        {project.workspaceRoot}
+                      </p>
+                    </div>
+                    <ForkSyncControl
+                      environmentId={project.environmentId}
+                      cwd={project.workspaceRoot}
+                      autoLoad={false}
+                    />
+                  </div>
+                ))}
+              </div>
             </SettingsSection>
           ) : null}
         </>

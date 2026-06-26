@@ -16,6 +16,20 @@ import {
 import { AssetAccessError, AssetCreateUrlInput, AssetCreateUrlResult } from "./assets.ts";
 import {
   GitActionProgressEvent,
+  GitForkSyncAbortInput,
+  GitForkSyncAbortResult,
+  GitForkSyncAgentPromptInput,
+  GitForkSyncAgentPromptResult,
+  GitForkSyncPushInput,
+  GitForkSyncPushResult,
+  GitForkSyncResumeInput,
+  GitForkSyncResumeResult,
+  GitForkSyncSetupInput,
+  GitForkSyncSetupResult,
+  GitForkSyncStatusInput,
+  GitForkSyncStatusResult,
+  GitForkSyncUpdateInput,
+  GitForkSyncUpdateResult,
   VcsSwitchRefInput,
   VcsSwitchRefResult,
   GitCommandError,
@@ -174,6 +188,13 @@ export const WS_METHODS = {
   gitRunStackedAction: "git.runStackedAction",
   gitResolvePullRequest: "git.resolvePullRequest",
   gitPreparePullRequestThread: "git.preparePullRequestThread",
+  gitForkSyncStatus: "git.forkSync.status",
+  gitForkSyncSetup: "git.forkSync.setup",
+  gitForkSyncUpdate: "git.forkSync.update",
+  gitForkSyncPush: "git.forkSync.push",
+  gitForkSyncResume: "git.forkSync.resume",
+  gitForkSyncAbort: "git.forkSync.abort",
+  gitForkSyncAgentPrompt: "git.forkSync.agentPrompt",
 
   // Review methods
   reviewGetDiffPreview: "review.getDiffPreview",
@@ -429,6 +450,48 @@ export const WsGitResolvePullRequestRpc = Rpc.make(WS_METHODS.gitResolvePullRequ
 export const WsGitPreparePullRequestThreadRpc = Rpc.make(WS_METHODS.gitPreparePullRequestThread, {
   payload: GitPreparePullRequestThreadInput,
   success: GitPreparePullRequestThreadResult,
+  error: Schema.Union([GitManagerServiceError, EnvironmentAuthorizationError]),
+});
+
+export const WsGitForkSyncStatusRpc = Rpc.make(WS_METHODS.gitForkSyncStatus, {
+  payload: GitForkSyncStatusInput,
+  success: GitForkSyncStatusResult,
+  error: Schema.Union([GitManagerServiceError, EnvironmentAuthorizationError]),
+});
+
+export const WsGitForkSyncSetupRpc = Rpc.make(WS_METHODS.gitForkSyncSetup, {
+  payload: GitForkSyncSetupInput,
+  success: GitForkSyncSetupResult,
+  error: Schema.Union([GitManagerServiceError, EnvironmentAuthorizationError]),
+});
+
+export const WsGitForkSyncUpdateRpc = Rpc.make(WS_METHODS.gitForkSyncUpdate, {
+  payload: GitForkSyncUpdateInput,
+  success: GitForkSyncUpdateResult,
+  error: Schema.Union([GitManagerServiceError, EnvironmentAuthorizationError]),
+});
+
+export const WsGitForkSyncPushRpc = Rpc.make(WS_METHODS.gitForkSyncPush, {
+  payload: GitForkSyncPushInput,
+  success: GitForkSyncPushResult,
+  error: Schema.Union([GitManagerServiceError, EnvironmentAuthorizationError]),
+});
+
+export const WsGitForkSyncResumeRpc = Rpc.make(WS_METHODS.gitForkSyncResume, {
+  payload: GitForkSyncResumeInput,
+  success: GitForkSyncResumeResult,
+  error: Schema.Union([GitManagerServiceError, EnvironmentAuthorizationError]),
+});
+
+export const WsGitForkSyncAbortRpc = Rpc.make(WS_METHODS.gitForkSyncAbort, {
+  payload: GitForkSyncAbortInput,
+  success: GitForkSyncAbortResult,
+  error: Schema.Union([GitManagerServiceError, EnvironmentAuthorizationError]),
+});
+
+export const WsGitForkSyncAgentPromptRpc = Rpc.make(WS_METHODS.gitForkSyncAgentPrompt, {
+  payload: GitForkSyncAgentPromptInput,
+  success: GitForkSyncAgentPromptResult,
   error: Schema.Union([GitManagerServiceError, EnvironmentAuthorizationError]),
 });
 
@@ -710,6 +773,13 @@ export const WsRpcGroup = RpcGroup.make(
   WsGitRunStackedActionRpc,
   WsGitResolvePullRequestRpc,
   WsGitPreparePullRequestThreadRpc,
+  WsGitForkSyncStatusRpc,
+  WsGitForkSyncSetupRpc,
+  WsGitForkSyncUpdateRpc,
+  WsGitForkSyncPushRpc,
+  WsGitForkSyncResumeRpc,
+  WsGitForkSyncAbortRpc,
+  WsGitForkSyncAgentPromptRpc,
   WsVcsListRefsRpc,
   WsVcsCreateWorktreeRpc,
   WsVcsRemoveWorktreeRpc,

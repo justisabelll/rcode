@@ -1,5 +1,5 @@
 import { useAtomValue } from "@effect/atom-react";
-import { type ScopedThreadRef } from "@t3tools/contracts";
+import { type GitForkSyncAgentPromptResult, type ScopedThreadRef } from "@t3tools/contracts";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
@@ -83,12 +83,13 @@ import { sourceControlEnvironment } from "~/state/sourceControl";
 import { threadEnvironment } from "~/state/threads";
 import { useAtomCommand } from "~/state/use-atom-command";
 import { vcsEnvironment } from "~/state/vcs";
-import { randomUUID } from "~/lib/utils";
+import { newMessageId, newThreadId, randomUUID } from "~/lib/utils";
 import { resolvePathLinkTarget } from "~/terminal-links";
 import { type DraftId, useComposerDraftStore } from "~/composerDraftStore";
 import { readLocalApi } from "~/localApi";
 import { getSourceControlPresentation } from "~/sourceControlPresentation";
 import { openPullRequestLink } from "~/lib/openPullRequestLink";
+import { ForkSyncControl } from "./ForkSyncControl";
 
 interface GitActionsControlProps {
   gitCwd: string | null;
@@ -152,7 +153,17 @@ function requestVcsStatusRefresh(
   }
   void refresh({ environmentId, input: { cwd } });
 }
-const RUNNING_SOURCE_CONTROL_ACTIONS = ["runStackedAction", "pull", "publishRepository"] as const;
+const RUNNING_SOURCE_CONTROL_ACTIONS = [
+  "runStackedAction",
+  "pull",
+  "publishRepository",
+  "forkSyncSetup",
+  "forkSyncUpdate",
+  "forkSyncPush",
+  "forkSyncResume",
+  "forkSyncAbort",
+  "forkSyncAgentPrompt",
+] as const;
 
 const PUBLISH_PROVIDER_OPTIONS = [
   {
@@ -975,6 +986,8 @@ export default function GitActionsControl({
     threadEnvironment.updateMetadata,
     "thread branch metadata update",
   );
+  const startThreadTurn = useAtomCommand(threadEnvironment.startTurn, { reportFailure: false });
+  const navigate = useNavigate();
   const activeEnvironmentId = activeThreadRef?.environmentId ?? null;
   const serverConfig = useAtomValue(serverEnvironment.configValueAtom(activeEnvironmentId));
   const openInPreferredEditor = useOpenInPreferredEditor(
@@ -1005,6 +1018,63 @@ export default function GitActionsControl({
   const sourceControlScope = useMemo(
     () => ({ environmentId: activeEnvironmentId, cwd: gitCwd }),
     [activeEnvironmentId, gitCwd],
+  );
+  const launchForkSyncAgentPrompt = useCallback(
+    async (result: GitForkSyncAgentPromptResult): Promise<boolean> => {
+      const syncSession = "syncSession" in result.status ? result.status.syncSession : null;
+      if (!activeThreadRef || !activeServerThread || syncSession === null) {
+        return false;
+      }
+
+      const threadId = newThreadId();
+      const messageId = newMessageId();
+      const createdAt = new Date().toISOString();
+      const title = "Resolve fork sync conflicts";
+      const interactionMode = "default";
+      const startResult = await startThreadTurn({
+        environmentId: activeThreadRef.environmentId,
+        input: {
+          threadId,
+          message: {
+            messageId,
+            role: "user",
+            text: result.prompt,
+            attachments: [],
+          },
+          modelSelection: activeServerThread.modelSelection,
+          titleSeed: title,
+          runtimeMode: activeServerThread.runtimeMode,
+          interactionMode,
+          bootstrap: {
+            createThread: {
+              projectId: activeServerThread.projectId,
+              title,
+              modelSelection: activeServerThread.modelSelection,
+              runtimeMode: activeServerThread.runtimeMode,
+              interactionMode,
+              branch: syncSession.branch,
+              worktreePath: syncSession.worktreePath,
+              createdAt,
+            },
+          },
+          createdAt,
+        },
+      });
+
+      if (startResult._tag === "Failure") {
+        return false;
+      }
+
+      await navigate({
+        to: "/$environmentId/$threadId",
+        params: {
+          environmentId: activeThreadRef.environmentId,
+          threadId,
+        },
+      });
+      return true;
+    },
+    [activeServerThread, activeThreadRef, navigate, startThreadTurn],
   );
   let runGitActionWithToast: (input: RunGitActionWithToastInput) => Promise<void>;
 
@@ -1738,6 +1808,12 @@ export default function GitActionsControl({
               <ChevronDownIcon aria-hidden="true" className="size-4" />
             </MenuTrigger>
             <MenuPopup align="end" className="w-full">
+              <ForkSyncControl
+                environmentId={activeEnvironmentId}
+                cwd={gitCwd}
+                compact
+                onLaunchAgentPrompt={launchForkSyncAgentPrompt}
+              />
               {gitActionMenuItems.map((item) => {
                 const disabledReason = getMenuActionDisabledReason({
                   item,

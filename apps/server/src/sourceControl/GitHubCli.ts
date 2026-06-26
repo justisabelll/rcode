@@ -196,6 +196,12 @@ export interface GitHubRepositoryCloneUrls {
   readonly sshUrl: string;
 }
 
+export interface GitHubRepositoryForkInfo extends GitHubRepositoryCloneUrls {
+  readonly defaultBranch: string;
+  readonly isFork: boolean;
+  readonly parent: (GitHubRepositoryCloneUrls & { readonly defaultBranch: string }) | null;
+}
+
 export class GitHubCli extends Context.Service<
   GitHubCli,
   {
@@ -220,6 +226,11 @@ export class GitHubCli extends Context.Service<
       readonly cwd: string;
       readonly repository: string;
     }) => Effect.Effect<GitHubRepositoryCloneUrls, GitHubCliError>;
+
+    readonly getRepositoryForkInfo: (input: {
+      readonly cwd: string;
+      readonly repository: string;
+    }) => Effect.Effect<GitHubRepositoryForkInfo, GitHubCliError>;
 
     readonly createRepository: (input: {
       readonly cwd: string;
@@ -256,6 +267,39 @@ const decodeRawGitHubRepositoryCloneUrls = Schema.decodeEffect(
   Schema.fromJsonString(RawGitHubRepositoryCloneUrlsSchema),
 );
 
+const RawGitHubRepositoryForkInfoSchema = Schema.Struct({
+  nameWithOwner: TrimmedNonEmptyString,
+  url: TrimmedNonEmptyString,
+  sshUrl: TrimmedNonEmptyString,
+  isFork: Schema.Boolean,
+  defaultBranchRef: Schema.Struct({
+    name: TrimmedNonEmptyString,
+  }),
+  parent: Schema.NullOr(
+    Schema.Struct({
+      name: TrimmedNonEmptyString,
+      owner: Schema.Struct({
+        login: TrimmedNonEmptyString,
+      }),
+    }),
+  ),
+});
+const decodeRawGitHubRepositoryForkInfo = Schema.decodeEffect(
+  Schema.fromJsonString(RawGitHubRepositoryForkInfoSchema),
+);
+
+const RawGitHubRepositoryForkParentSchema = Schema.Struct({
+  nameWithOwner: TrimmedNonEmptyString,
+  url: TrimmedNonEmptyString,
+  sshUrl: TrimmedNonEmptyString,
+  defaultBranchRef: Schema.Struct({
+    name: TrimmedNonEmptyString,
+  }),
+});
+const decodeRawGitHubRepositoryForkParent = Schema.decodeEffect(
+  Schema.fromJsonString(RawGitHubRepositoryForkParentSchema),
+);
+
 function normalizeRepositoryCloneUrls(
   raw: Schema.Schema.Type<typeof RawGitHubRepositoryCloneUrlsSchema>,
 ): GitHubRepositoryCloneUrls {
@@ -263,6 +307,27 @@ function normalizeRepositoryCloneUrls(
     nameWithOwner: raw.nameWithOwner,
     url: raw.url,
     sshUrl: raw.sshUrl,
+  };
+}
+
+function normalizeRepositoryForkInfo(
+  raw: Schema.Schema.Type<typeof RawGitHubRepositoryForkInfoSchema>,
+  parent: Schema.Schema.Type<typeof RawGitHubRepositoryForkParentSchema> | null,
+): GitHubRepositoryForkInfo {
+  return {
+    nameWithOwner: raw.nameWithOwner,
+    url: raw.url,
+    sshUrl: raw.sshUrl,
+    defaultBranch: raw.defaultBranchRef.name,
+    isFork: raw.isFork,
+    parent: parent
+      ? {
+          nameWithOwner: parent.nameWithOwner,
+          url: parent.url,
+          sshUrl: parent.sshUrl,
+          defaultBranch: parent.defaultBranchRef.name,
+        }
+      : null,
   };
 }
 
@@ -410,6 +475,61 @@ export const make = Effect.gen(function* () {
         ),
         Effect.map(normalizeRepositoryCloneUrls),
       ),
+    getRepositoryForkInfo: (input) =>
+      Effect.gen(function* () {
+        const rawForkInfo = yield* execute({
+          cwd: input.cwd,
+          args: [
+            "repo",
+            "view",
+            input.repository,
+            "--json",
+            "nameWithOwner,url,sshUrl,isFork,defaultBranchRef,parent",
+          ],
+        }).pipe(Effect.map((result) => result.stdout.trim()));
+        const forkInfo = yield* decodeRawGitHubRepositoryForkInfo(rawForkInfo).pipe(
+          Effect.mapError(
+            (cause) =>
+              new GitHubRepositoryDecodeError({
+                command: "gh",
+                cwd: input.cwd,
+                cause,
+              }),
+          ),
+        );
+        const parentNameWithOwner = forkInfo.parent
+          ? `${forkInfo.parent.owner.login}/${forkInfo.parent.name}`
+          : null;
+        const parent =
+          parentNameWithOwner === null
+            ? null
+            : yield* execute({
+                cwd: input.cwd,
+                args: [
+                  "repo",
+                  "view",
+                  parentNameWithOwner,
+                  "--json",
+                  "nameWithOwner,url,sshUrl,defaultBranchRef",
+                ],
+              }).pipe(
+                Effect.map((result) => result.stdout.trim()),
+                Effect.flatMap((raw) =>
+                  decodeRawGitHubRepositoryForkParent(raw).pipe(
+                    Effect.mapError(
+                      (cause) =>
+                        new GitHubRepositoryDecodeError({
+                          command: "gh",
+                          cwd: input.cwd,
+                          cause,
+                        }),
+                    ),
+                  ),
+                ),
+              );
+
+        return normalizeRepositoryForkInfo(forkInfo, parent);
+      }),
     createRepository: (input) =>
       execute({
         cwd: input.cwd,

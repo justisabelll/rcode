@@ -103,6 +103,7 @@ import * as VcsStatusBroadcaster from "./vcs/VcsStatusBroadcaster.ts";
 import * as VcsDriverRegistry from "./vcs/VcsDriverRegistry.ts";
 import * as VcsProvisioningService from "./vcs/VcsProvisioningService.ts";
 import * as GitWorkflowService from "./git/GitWorkflowService.ts";
+import * as ForkSyncService from "./git/ForkSyncService.ts";
 import * as ReviewService from "./review/ReviewService.ts";
 import * as SourceControlRepositoryService from "./sourceControl/SourceControlRepositoryService.ts";
 import * as ServerSecretStore from "./auth/ServerSecretStore.ts";
@@ -323,6 +324,7 @@ const buildAppUnderTest = (options?: {
     vcsDriverRegistry?: Partial<VcsDriverRegistry.VcsDriverRegistry["Service"]>;
     gitVcsDriver?: Partial<GitVcsDriver.GitVcsDriver["Service"]>;
     gitManager?: Partial<GitManager.GitManager["Service"]>;
+    forkSyncService?: Partial<ForkSyncService.ForkSyncService["Service"]>;
     sourceControlRepositoryService?: Partial<
       SourceControlRepositoryService.SourceControlRepositoryService["Service"]
     >;
@@ -485,6 +487,54 @@ const buildAppUnderTest = (options?: {
     const gitManagerLayer = Layer.mock(GitManager.GitManager)({
       ...options?.layers?.gitManager,
     });
+    const forkSyncLayer = Layer.mock(ForkSyncService.ForkSyncService)({
+      status: () =>
+        Effect.succeed({
+          _tag: "unsupported" as const,
+          reason: "non_git_repo" as const,
+          message: "This directory is not a Git repository.",
+        }),
+      setup: () =>
+        Effect.succeed({
+          _tag: "unsupported" as const,
+          reason: "non_git_repo" as const,
+          message: "This directory is not a Git repository.",
+        }),
+      update: () =>
+        Effect.succeed({
+          _tag: "unsupported" as const,
+          reason: "non_git_repo" as const,
+          message: "This directory is not a Git repository.",
+        }),
+      push: () =>
+        Effect.succeed({
+          _tag: "unsupported" as const,
+          reason: "non_git_repo" as const,
+          message: "This directory is not a Git repository.",
+        }),
+      resume: () =>
+        Effect.succeed({
+          _tag: "unsupported" as const,
+          reason: "non_git_repo" as const,
+          message: "This directory is not a Git repository.",
+        }),
+      abort: () =>
+        Effect.succeed({
+          _tag: "unsupported" as const,
+          reason: "non_git_repo" as const,
+          message: "This directory is not a Git repository.",
+        }),
+      agentPrompt: () =>
+        Effect.succeed({
+          prompt: "Fork sync is not available for this repository.",
+          status: {
+            _tag: "unsupported" as const,
+            reason: "non_git_repo" as const,
+            message: "This directory is not a Git repository.",
+          },
+        }),
+      ...options?.layers?.forkSyncService,
+    });
     const workspaceEntriesLayer = WorkspaceEntries.layer.pipe(
       Layer.provide(WorkspacePaths.layer),
       Layer.provideMerge(vcsDriverRegistryLayer),
@@ -502,6 +552,12 @@ const buildAppUnderTest = (options?: {
       Layer.provideMerge(vcsDriverRegistryLayer),
       Layer.provideMerge(gitVcsDriverLayer),
       Layer.provideMerge(gitManagerLayer),
+    );
+    const gitServicesLayer = Layer.mergeAll(
+      gitManagerLayer,
+      gitVcsDriverLayer,
+      gitWorkflowLayer,
+      forkSyncLayer,
     );
     const vcsProvisioningLayer = VcsProvisioningService.layer.pipe(
       Layer.provide(vcsDriverRegistryLayer),
@@ -626,9 +682,7 @@ const buildAppUnderTest = (options?: {
             }),
         }),
       ),
-      Layer.provide(gitManagerLayer),
-      Layer.provide(gitVcsDriverLayer),
-      Layer.provide(gitWorkflowLayer),
+      Layer.provide(gitServicesLayer),
       Layer.provide(reviewLayer),
       Layer.provide(vcsProvisioningLayer),
       Layer.provide(

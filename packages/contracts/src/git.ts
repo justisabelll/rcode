@@ -187,6 +187,42 @@ export const VcsInitInput = Schema.Struct({
 });
 export type VcsInitInput = typeof VcsInitInput.Type;
 
+export const GitForkSyncStatusInput = Schema.Struct({
+  cwd: TrimmedNonEmptyStringSchema,
+});
+export type GitForkSyncStatusInput = typeof GitForkSyncStatusInput.Type;
+
+export const GitForkSyncSetupInput = Schema.Struct({
+  cwd: TrimmedNonEmptyStringSchema,
+  remoteName: Schema.optional(TrimmedNonEmptyStringSchema),
+});
+export type GitForkSyncSetupInput = typeof GitForkSyncSetupInput.Type;
+
+export const GitForkSyncUpdateInput = Schema.Struct({
+  cwd: TrimmedNonEmptyStringSchema,
+});
+export type GitForkSyncUpdateInput = typeof GitForkSyncUpdateInput.Type;
+
+export const GitForkSyncPushInput = Schema.Struct({
+  cwd: TrimmedNonEmptyStringSchema,
+});
+export type GitForkSyncPushInput = typeof GitForkSyncPushInput.Type;
+
+export const GitForkSyncResumeInput = Schema.Struct({
+  cwd: TrimmedNonEmptyStringSchema,
+});
+export type GitForkSyncResumeInput = typeof GitForkSyncResumeInput.Type;
+
+export const GitForkSyncAbortInput = Schema.Struct({
+  cwd: TrimmedNonEmptyStringSchema,
+});
+export type GitForkSyncAbortInput = typeof GitForkSyncAbortInput.Type;
+
+export const GitForkSyncAgentPromptInput = Schema.Struct({
+  cwd: TrimmedNonEmptyStringSchema,
+});
+export type GitForkSyncAgentPromptInput = typeof GitForkSyncAgentPromptInput.Type;
+
 // RPC Results
 
 const VcsStatusChangeRequest = Schema.Struct({
@@ -318,6 +354,92 @@ export const VcsPullResult = Schema.Struct({
   upstreamRef: TrimmedNonEmptyStringSchema.pipe(Schema.NullOr),
 });
 export type VcsPullResult = typeof VcsPullResult.Type;
+
+const GitForkSyncRepository = Schema.Struct({
+  nameWithOwner: TrimmedNonEmptyStringSchema,
+  url: TrimmedNonEmptyStringSchema,
+  sshUrl: TrimmedNonEmptyStringSchema,
+  defaultBranch: TrimmedNonEmptyStringSchema,
+});
+export type GitForkSyncRepository = typeof GitForkSyncRepository.Type;
+
+const GitForkSyncUnsupportedReason = Schema.Literals([
+  "non_git_repo",
+  "no_origin_remote",
+  "non_github_origin",
+  "not_a_fork",
+  "missing_github_auth",
+  "fork_metadata_unavailable",
+]);
+export type GitForkSyncUnsupportedReason = typeof GitForkSyncUnsupportedReason.Type;
+
+const GitForkSyncRemoteState = {
+  originRemote: TrimmedNonEmptyStringSchema,
+  originRepository: GitForkSyncRepository,
+  parentRepository: GitForkSyncRepository,
+  defaultBranch: TrimmedNonEmptyStringSchema,
+  upstreamRemote: TrimmedNonEmptyStringSchema.pipe(Schema.NullOr),
+} as const;
+
+const GitForkSyncConflictFile = Schema.Struct({
+  path: TrimmedNonEmptyStringSchema,
+});
+export type GitForkSyncConflictFile = typeof GitForkSyncConflictFile.Type;
+
+const GitForkSyncSession = Schema.Struct({
+  id: TrimmedNonEmptyStringSchema,
+  branch: TrimmedNonEmptyStringSchema,
+  worktreePath: TrimmedNonEmptyStringSchema,
+  conflictedFiles: Schema.Array(GitForkSyncConflictFile),
+});
+export type GitForkSyncSession = typeof GitForkSyncSession.Type;
+
+const GitForkSyncComparisonState = {
+  ...GitForkSyncRemoteState,
+  localCommit: TrimmedNonEmptyStringSchema.pipe(Schema.NullOr),
+  originCommit: TrimmedNonEmptyStringSchema,
+  upstreamCommit: TrimmedNonEmptyStringSchema,
+  syncSession: GitForkSyncSession.pipe(Schema.NullOr),
+} as const;
+
+export const GitForkSyncStatusResult = Schema.Union([
+  Schema.TaggedStruct("unsupported", {
+    reason: GitForkSyncUnsupportedReason,
+    message: TrimmedNonEmptyStringSchema,
+  }),
+  Schema.TaggedStruct("setup_required", GitForkSyncRemoteState),
+  Schema.TaggedStruct("up_to_date", GitForkSyncComparisonState),
+  Schema.TaggedStruct("updates_available", GitForkSyncComparisonState),
+  Schema.TaggedStruct("push_available", GitForkSyncComparisonState),
+  Schema.TaggedStruct("diverged", GitForkSyncComparisonState),
+  Schema.TaggedStruct("conflicted", GitForkSyncComparisonState),
+  Schema.TaggedStruct("blocked", {
+    ...GitForkSyncRemoteState,
+    message: TrimmedNonEmptyStringSchema,
+  }),
+]);
+export type GitForkSyncStatusResult = typeof GitForkSyncStatusResult.Type;
+
+export const GitForkSyncSetupResult = GitForkSyncStatusResult;
+export type GitForkSyncSetupResult = typeof GitForkSyncSetupResult.Type;
+
+export const GitForkSyncUpdateResult = GitForkSyncStatusResult;
+export type GitForkSyncUpdateResult = typeof GitForkSyncUpdateResult.Type;
+
+export const GitForkSyncPushResult = GitForkSyncStatusResult;
+export type GitForkSyncPushResult = typeof GitForkSyncPushResult.Type;
+
+export const GitForkSyncResumeResult = GitForkSyncStatusResult;
+export type GitForkSyncResumeResult = typeof GitForkSyncResumeResult.Type;
+
+export const GitForkSyncAbortResult = GitForkSyncStatusResult;
+export type GitForkSyncAbortResult = typeof GitForkSyncAbortResult.Type;
+
+export const GitForkSyncAgentPromptResult = Schema.Struct({
+  prompt: TrimmedNonEmptyStringSchema,
+  status: GitForkSyncStatusResult,
+});
+export type GitForkSyncAgentPromptResult = typeof GitForkSyncAgentPromptResult.Type;
 
 // RPC / domain errors
 export class GitCommandError extends Schema.TaggedErrorClass<GitCommandError>()("GitCommandError", {

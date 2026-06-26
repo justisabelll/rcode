@@ -1,5 +1,11 @@
 export {
+  useForkSyncAbortAction,
+  useForkSyncAgentPromptAction,
   readCachedPullRequestResolution,
+  useForkSyncPushAction,
+  useForkSyncResumeAction,
+  useForkSyncSetupAction,
+  useForkSyncUpdateAction,
   useGitStackedAction,
   usePreparePullRequestThreadAction,
   usePullRequestResolutionState as usePullRequestResolution,

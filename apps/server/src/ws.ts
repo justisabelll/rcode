@@ -89,6 +89,7 @@ import * as WorkspacePaths from "./workspace/WorkspacePaths.ts";
 import * as VcsStatusBroadcaster from "./vcs/VcsStatusBroadcaster.ts";
 import * as VcsProvisioningService from "./vcs/VcsProvisioningService.ts";
 import * as GitWorkflowService from "./git/GitWorkflowService.ts";
+import * as ForkSyncService from "./git/ForkSyncService.ts";
 import * as ReviewService from "./review/ReviewService.ts";
 import * as ProjectSetupScriptRunner from "./project/ProjectSetupScriptRunner.ts";
 import * as RepositoryIdentityResolver from "./project/RepositoryIdentityResolver.ts";
@@ -312,6 +313,13 @@ const RPC_REQUIRED_SCOPE = new Map<string, AuthEnvironmentScope>([
   [WS_METHODS.gitRunStackedAction, AuthOrchestrationOperateScope],
   [WS_METHODS.gitResolvePullRequest, AuthOrchestrationOperateScope],
   [WS_METHODS.gitPreparePullRequestThread, AuthOrchestrationOperateScope],
+  [WS_METHODS.gitForkSyncStatus, AuthOrchestrationReadScope],
+  [WS_METHODS.gitForkSyncSetup, AuthOrchestrationOperateScope],
+  [WS_METHODS.gitForkSyncUpdate, AuthOrchestrationOperateScope],
+  [WS_METHODS.gitForkSyncPush, AuthOrchestrationOperateScope],
+  [WS_METHODS.gitForkSyncResume, AuthOrchestrationOperateScope],
+  [WS_METHODS.gitForkSyncAbort, AuthOrchestrationOperateScope],
+  [WS_METHODS.gitForkSyncAgentPrompt, AuthOrchestrationOperateScope],
   [WS_METHODS.vcsListRefs, AuthOrchestrationReadScope],
   [WS_METHODS.vcsCreateWorktree, AuthOrchestrationOperateScope],
   [WS_METHODS.vcsRemoveWorktree, AuthOrchestrationOperateScope],
@@ -396,6 +404,7 @@ const makeWsRpcLayer = (currentSession: EnvironmentAuth.AuthenticatedSession) =>
       const keybindings = yield* Keybindings.Keybindings;
       const externalLauncher = yield* ExternalLauncher.ExternalLauncher;
       const gitWorkflow = yield* GitWorkflowService.GitWorkflowService;
+      const forkSync = yield* ForkSyncService.ForkSyncService;
       const review = yield* ReviewService.ReviewService;
       const vcsProvisioning = yield* VcsProvisioningService.VcsProvisioningService;
       const vcsStatusBroadcaster = yield* VcsStatusBroadcaster.VcsStatusBroadcaster;
@@ -1517,6 +1526,44 @@ const makeWsRpcLayer = (currentSession: EnvironmentAuth.AuthenticatedSession) =>
               .pipe(Effect.tap(() => refreshGitStatus(input.cwd))),
             { "rpc.aggregate": "git" },
           ),
+        [WS_METHODS.gitForkSyncStatus]: (input) =>
+          observeRpcEffect(WS_METHODS.gitForkSyncStatus, forkSync.status(input), {
+            "rpc.aggregate": "git",
+          }),
+        [WS_METHODS.gitForkSyncSetup]: (input) =>
+          observeRpcEffect(
+            WS_METHODS.gitForkSyncSetup,
+            forkSync.setup(input).pipe(Effect.tap(() => refreshGitStatus(input.cwd))),
+            { "rpc.aggregate": "git" },
+          ),
+        [WS_METHODS.gitForkSyncUpdate]: (input) =>
+          observeRpcEffect(
+            WS_METHODS.gitForkSyncUpdate,
+            forkSync.update(input).pipe(Effect.tap(() => refreshGitStatus(input.cwd))),
+            { "rpc.aggregate": "git" },
+          ),
+        [WS_METHODS.gitForkSyncPush]: (input) =>
+          observeRpcEffect(
+            WS_METHODS.gitForkSyncPush,
+            forkSync.push(input).pipe(Effect.tap(() => refreshGitStatus(input.cwd))),
+            { "rpc.aggregate": "git" },
+          ),
+        [WS_METHODS.gitForkSyncResume]: (input) =>
+          observeRpcEffect(
+            WS_METHODS.gitForkSyncResume,
+            forkSync.resume(input).pipe(Effect.tap(() => refreshGitStatus(input.cwd))),
+            { "rpc.aggregate": "git" },
+          ),
+        [WS_METHODS.gitForkSyncAbort]: (input) =>
+          observeRpcEffect(
+            WS_METHODS.gitForkSyncAbort,
+            forkSync.abort(input).pipe(Effect.tap(() => refreshGitStatus(input.cwd))),
+            { "rpc.aggregate": "git" },
+          ),
+        [WS_METHODS.gitForkSyncAgentPrompt]: (input) =>
+          observeRpcEffect(WS_METHODS.gitForkSyncAgentPrompt, forkSync.agentPrompt(input), {
+            "rpc.aggregate": "git",
+          }),
         [WS_METHODS.vcsListRefs]: (input) =>
           observeRpcEffect(WS_METHODS.vcsListRefs, gitWorkflow.listRefs(input), {
             "rpc.aggregate": "vcs",

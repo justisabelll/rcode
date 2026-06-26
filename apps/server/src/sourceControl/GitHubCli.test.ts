@@ -237,6 +237,90 @@ describe("GitHubCli.layer", () => {
     }).pipe(Effect.provide(layer)),
   );
 
+  it.effect("reads repository fork parent metadata", () =>
+    Effect.gen(function* () {
+      mockRun
+        .mockReturnValueOnce(
+          Effect.succeed(
+            processOutput(
+              // @effect-diagnostics-next-line preferSchemaOverJson:off
+              JSON.stringify({
+                nameWithOwner: "octocat/codething-mvp",
+                url: "https://github.com/octocat/codething-mvp",
+                sshUrl: "git@github.com:octocat/codething-mvp.git",
+                isFork: true,
+                defaultBranchRef: { name: "main" },
+                parent: {
+                  name: "codething-mvp",
+                  owner: { login: "pingdotgg" },
+                },
+              }),
+            ),
+          ),
+        )
+        .mockReturnValueOnce(
+          Effect.succeed(
+            processOutput(
+              // @effect-diagnostics-next-line preferSchemaOverJson:off
+              JSON.stringify({
+                nameWithOwner: "pingdotgg/codething-mvp",
+                url: "https://github.com/pingdotgg/codething-mvp",
+                sshUrl: "git@github.com:pingdotgg/codething-mvp.git",
+                defaultBranchRef: { name: "trunk" },
+              }),
+            ),
+          ),
+        );
+
+      const gh = yield* GitHubCli.GitHubCli;
+      const result = yield* gh.getRepositoryForkInfo({
+        cwd: "/repo",
+        repository: "octocat/codething-mvp",
+      });
+
+      assert.deepStrictEqual(result, {
+        nameWithOwner: "octocat/codething-mvp",
+        url: "https://github.com/octocat/codething-mvp",
+        sshUrl: "git@github.com:octocat/codething-mvp.git",
+        isFork: true,
+        defaultBranch: "main",
+        parent: {
+          nameWithOwner: "pingdotgg/codething-mvp",
+          url: "https://github.com/pingdotgg/codething-mvp",
+          sshUrl: "git@github.com:pingdotgg/codething-mvp.git",
+          defaultBranch: "trunk",
+        },
+      });
+      expect(mockRun).toHaveBeenCalledTimes(2);
+      expect(mockRun).toHaveBeenNthCalledWith(1, {
+        operation: "GitHubCli.execute",
+        command: "gh",
+        args: [
+          "repo",
+          "view",
+          "octocat/codething-mvp",
+          "--json",
+          "nameWithOwner,url,sshUrl,isFork,defaultBranchRef,parent",
+        ],
+        cwd: "/repo",
+        timeoutMs: 30_000,
+      });
+      expect(mockRun).toHaveBeenNthCalledWith(2, {
+        operation: "GitHubCli.execute",
+        command: "gh",
+        args: [
+          "repo",
+          "view",
+          "pingdotgg/codething-mvp",
+          "--json",
+          "nameWithOwner,url,sshUrl,defaultBranchRef",
+        ],
+        cwd: "/repo",
+        timeoutMs: 30_000,
+      });
+    }).pipe(Effect.provide(layer)),
+  );
+
   it.effect("creates repositories and parses clone URLs from create output", () =>
     Effect.gen(function* () {
       mockRun.mockReturnValueOnce(

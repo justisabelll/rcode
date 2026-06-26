@@ -34,7 +34,13 @@ export type SourceControlActionKind =
   | "pull"
   | "publishRepository"
   | "runStackedAction"
-  | "preparePullRequestThread";
+  | "preparePullRequestThread"
+  | "forkSyncSetup"
+  | "forkSyncUpdate"
+  | "forkSyncPush"
+  | "forkSyncResume"
+  | "forkSyncAbort"
+  | "forkSyncAgentPrompt";
 
 export interface SourceControlActionScope {
   readonly environmentId: EnvironmentId | null;
@@ -61,6 +67,12 @@ const ACTION_OPERATION = {
   publishRepository: "publish_repository",
   runStackedAction: "run_change_request",
   preparePullRequestThread: "prepare_pull_request_thread",
+  forkSyncSetup: "fork_sync_setup",
+  forkSyncUpdate: "fork_sync_update",
+  forkSyncPush: "fork_sync_push",
+  forkSyncResume: "fork_sync_resume",
+  forkSyncAbort: "fork_sync_abort",
+  forkSyncAgentPrompt: "fork_sync_agent_prompt",
 } as const satisfies Record<SourceControlActionKind, VcsActionOperation>;
 
 function useAction<
@@ -337,6 +349,160 @@ export function usePreparePullRequestThreadAction(scope: SourceControlActionScop
   return useAction({
     kind: "preparePullRequestThread",
     label: "Preparing pull request thread",
+    scope,
+    action,
+  });
+}
+
+export function useForkSyncSetupAction(scope: SourceControlActionScope) {
+  const setup = useAtomCommand(gitEnvironment.forkSyncSetup, { reportFailure: false });
+  const action = useCallback(
+    async (input?: { remoteName?: string }) => {
+      const target = resolveScope(scope);
+      if (target === null) {
+        return AsyncResult.failure<never, VcsActionUnavailableError>(
+          Cause.fail(
+            new VcsActionUnavailableError({
+              operation: "fork_sync_setup",
+              environmentId: scope.environmentId,
+              cwd: scope.cwd,
+            }),
+          ),
+        );
+      }
+      return setup({
+        environmentId: target.environmentId,
+        input: {
+          cwd: target.cwd,
+          ...(input?.remoteName ? { remoteName: input.remoteName } : {}),
+        },
+      });
+    },
+    [scope, setup],
+  );
+  return useAction({
+    kind: "forkSyncSetup",
+    label: "Setting up upstream",
+    scope,
+    action,
+  });
+}
+
+export function useForkSyncUpdateAction(scope: SourceControlActionScope) {
+  const update = useAtomCommand(gitEnvironment.forkSyncUpdate, { reportFailure: false });
+  const action = useCallback(async () => {
+    const target = resolveScope(scope);
+    if (target === null) {
+      return AsyncResult.failure<never, VcsActionUnavailableError>(
+        Cause.fail(
+          new VcsActionUnavailableError({
+            operation: "fork_sync_update",
+            environmentId: scope.environmentId,
+            cwd: scope.cwd,
+          }),
+        ),
+      );
+    }
+    return update({
+      environmentId: target.environmentId,
+      input: { cwd: target.cwd },
+    });
+  }, [scope, update]);
+  return useAction({ kind: "forkSyncUpdate", label: "Updating fork", scope, action });
+}
+
+export function useForkSyncPushAction(scope: SourceControlActionScope) {
+  const push = useAtomCommand(gitEnvironment.forkSyncPush, { reportFailure: false });
+  const action = useCallback(async () => {
+    const target = resolveScope(scope);
+    if (target === null) {
+      return AsyncResult.failure<never, VcsActionUnavailableError>(
+        Cause.fail(
+          new VcsActionUnavailableError({
+            operation: "fork_sync_push",
+            environmentId: scope.environmentId,
+            cwd: scope.cwd,
+          }),
+        ),
+      );
+    }
+    return push({
+      environmentId: target.environmentId,
+      input: { cwd: target.cwd },
+    });
+  }, [push, scope]);
+  return useAction({ kind: "forkSyncPush", label: "Pushing fork", scope, action });
+}
+
+export function useForkSyncResumeAction(scope: SourceControlActionScope) {
+  const resume = useAtomCommand(gitEnvironment.forkSyncResume, { reportFailure: false });
+  const action = useCallback(async () => {
+    const target = resolveScope(scope);
+    if (target === null) {
+      return AsyncResult.failure<never, VcsActionUnavailableError>(
+        Cause.fail(
+          new VcsActionUnavailableError({
+            operation: "fork_sync_resume",
+            environmentId: scope.environmentId,
+            cwd: scope.cwd,
+          }),
+        ),
+      );
+    }
+    return resume({
+      environmentId: target.environmentId,
+      input: { cwd: target.cwd },
+    });
+  }, [resume, scope]);
+  return useAction({ kind: "forkSyncResume", label: "Resuming fork sync", scope, action });
+}
+
+export function useForkSyncAbortAction(scope: SourceControlActionScope) {
+  const abort = useAtomCommand(gitEnvironment.forkSyncAbort, { reportFailure: false });
+  const action = useCallback(async () => {
+    const target = resolveScope(scope);
+    if (target === null) {
+      return AsyncResult.failure<never, VcsActionUnavailableError>(
+        Cause.fail(
+          new VcsActionUnavailableError({
+            operation: "fork_sync_abort",
+            environmentId: scope.environmentId,
+            cwd: scope.cwd,
+          }),
+        ),
+      );
+    }
+    return abort({
+      environmentId: target.environmentId,
+      input: { cwd: target.cwd },
+    });
+  }, [abort, scope]);
+  return useAction({ kind: "forkSyncAbort", label: "Aborting fork sync", scope, action });
+}
+
+export function useForkSyncAgentPromptAction(scope: SourceControlActionScope) {
+  const agentPrompt = useAtomCommand(gitEnvironment.forkSyncAgentPrompt, { reportFailure: false });
+  const action = useCallback(async () => {
+    const target = resolveScope(scope);
+    if (target === null) {
+      return AsyncResult.failure<never, VcsActionUnavailableError>(
+        Cause.fail(
+          new VcsActionUnavailableError({
+            operation: "fork_sync_agent_prompt",
+            environmentId: scope.environmentId,
+            cwd: scope.cwd,
+          }),
+        ),
+      );
+    }
+    return agentPrompt({
+      environmentId: target.environmentId,
+      input: { cwd: target.cwd },
+    });
+  }, [agentPrompt, scope]);
+  return useAction({
+    kind: "forkSyncAgentPrompt",
+    label: "Preparing agent prompt",
     scope,
     action,
   });

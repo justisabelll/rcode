@@ -32,3 +32,5 @@ node_modules/
 *.log
 .env*
 !.env.example
+.r-loop/
+.r-loop-runner/

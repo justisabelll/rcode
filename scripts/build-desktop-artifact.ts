@@ -1326,7 +1326,7 @@ export const createBuildConfig = Effect.fn("createBuildConfig")(function* (
       protocols: [
         {
           name: "RCode",
-          schemes: ["t3code", "t3code-dev"],
+          schemes: ["rcode", "rcode-dev"],
         },
       ],
       ...(macPasskeySigning
